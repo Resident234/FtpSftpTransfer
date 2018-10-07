@@ -9,29 +9,43 @@
 
 namespace FileTransfer\Protocol\Transfer;
 
-class FTP
+class FTP extends Transfer
 {
 
     protected $connect;
 
+
     public function __construct($host, \FileTransfer\Protocol\Authentication\Authentication $auth, $port = 21)
     {
+        $this->strFunctionPrefix = 'ftp_';
         $this->connect = ftp_connect($host, $port);
         $auth->setConnect($this->connect);
         if ($auth->authenticate() === false) {
-            throw new Exception('FTP login is invalid.');
+            throw new \Exception('FTP login is invalid.');
         }
     }
 
     public function __call($func, $args)
     {
-        $func = 'ftp_' . $func;
-        if (function_exists($func)) {
-            array_unshift($args, $this->conn);
-            return call_user_func_array($func, $args);
+        $this->func = $func;
+        $this->args = $args;
+
+        $this->prepareArguments();
+
+        if (function_exists($this->func)) {
+
+            array_unshift($this->args, $this->connect);
+
+            $result = call_user_func_array($this->func, $this->args);
+            //if(!$result) throw new \Exception($this->func . ' runtime error. Args: ' . var_dump($this->args));
+            return $result;
         } else {
-            throw new Exception($func . ' is not a valid SFTP function.');
+            $e = new \Exception($this->func . ' is not a valid FTP function.');
+            var_dump($e->getTraceAsString());
+            throw $e;
         }
+
+
     }
 
     /*protected $connect;
@@ -49,13 +63,13 @@ class FTP
 
 }
 
-    /*
-    protected $conn;
+/*
+protected $conn;
 
-    /**
-     * Establish a connection
-     * @todo Options...
-     *//*
+/**
+ * Establish a connection
+ * @todo Options...
+ *//*
     public function __construct($url, array $options = null)
     {
 
@@ -328,7 +342,6 @@ class FTP extends AbstractProtocol
     }
 }
 */
-
 
 
 /*

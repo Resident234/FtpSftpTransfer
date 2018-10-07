@@ -27,6 +27,7 @@ class Factory
             'ssh' => __NAMESPACE__ . '\Protocol\Authentication\SSH2Authentication'
         );
 
+
     }
 
 
@@ -39,13 +40,18 @@ class Factory
         $transferClassName = $this->arTypeListTransferProtocols[$type];
         $authenticationClassName = $this->arTypeListAuthenticationMethods[$type];
 
-        if(is_array($pass)){
-            $auth = new $authenticationClassName . \Key($user, $pass[0], $pass[1]);
-        }else{
-            $auth = new $authenticationClassName . \Password($user, $pass);
+        if (is_array($pass)) {
+            $authenticationClassName .= "\Key";
+            $auth = new $authenticationClassName($user, $pass[0], $pass[1]);
+        } else {
+            $authenticationClassName .= "\Password";
+            $auth = new $authenticationClassName($user, $pass);
         }
 
-        return $this->connection = new $transferClassName($hostname, $auth, $port);
+        $this->connection = new $transferClassName($hostname, $auth, $port);
+        $this->connection->setDefaultParameters();
+
+        return $this->connection;
 
     }
 

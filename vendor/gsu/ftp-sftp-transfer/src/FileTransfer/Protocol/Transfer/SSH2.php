@@ -8,7 +8,7 @@
 
 namespace FileTransfer\Protocol\Transfer;
 
-class SSH2
+class SSH2 extends Transfer
 {
 
     protected $connect;

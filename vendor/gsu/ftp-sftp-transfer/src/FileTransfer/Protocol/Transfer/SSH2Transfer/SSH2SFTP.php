@@ -17,18 +17,23 @@ class SSH2SFTP extends FileTransfer\Protocol\Transfer\SSH2
     //$hostname, $user, $pass, $port
     public function __construct($host, \FileTransfer\Protocol\Authentication\Authentication $auth, $port = 22)
     {
+        $this->strFunctionPrefix = 'ssh2_sftp_';
         parent::__construct($host, $auth, $port);
         $this->sftp = ssh2_ftp($this->conn);
     }
 
     public function __call($func, $args)
     {
-        $func = 'ssh2_sftp_' . $func;
-        if (function_exists($func)) {
-            array_unshift($args, $this->sftp);
-            return call_user_func_array($func, $args);
+        $this->func = $func;
+        $this->args = $args;
+
+        $this->prepareArguments();
+
+        if (function_exists($this->func)) {
+            array_unshift($this->args, $this->sftp);
+            return call_user_func_array($this->func, $this->args);
         } else {
-            throw new Exception($func . ' is not a valid SFTP function.');
+            throw new Exception($this->func . ' is not a valid SFTP function.');
         }
     }
 }

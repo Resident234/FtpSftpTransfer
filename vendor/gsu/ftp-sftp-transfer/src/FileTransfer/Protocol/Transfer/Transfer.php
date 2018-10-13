@@ -45,6 +45,7 @@ abstract class Transfer
     protected $arCurrentPathOrigin = [];
     protected $arCurrentPathReceiver = [];
     protected $isMkDirLogMode = false;
+    protected $isPassiveConnectionMode = true;
 
     ///////////////////////////////////////////////////////////////////
     protected function prepareArguments()
@@ -88,12 +89,29 @@ abstract class Transfer
         $this->unsetSearchingFilesFilter();
         $this->clearCurrentPathOrigin();
         $this->clearFullNamesFilesList();
-
-        //TODO: move to method
-        $this->pasv(true);
+        $this->pasv($this->enablePassiveConnectionMode());
 
     }
 
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function enablePassiveConnectionMode()
+    {
+        return $this->isPassiveConnectionMode = true;
+    }
+
+    public function disablePassiveConnectionMode()
+    {
+        return $this->isPassiveConnectionMode = false;
+    }
+
+    public function isPassiveMode()
+    {
+        return $this->isPassiveMode;
+    }
+
+    ///////////////////////////////////////////////////////////////////
 
     public function search(
         $strNeedleFileName,
@@ -413,11 +431,11 @@ abstract class Transfer
                 $this->syncMkDir(implode(DIRECTORY_SEPARATOR, $this->getCurrentPathReceiver()));
                 $this->clearCurrentPathReceiver();
                 $this->enableMkDirLogMode();
-                $this->pasv(true);
+                $this->pasv($this->isPassiveMode());
                 $this->sync . ucwords($strActionMethodName)($file);
             };
         } else {
-            $this->pasv(true);
+            $this->pasv($this->isPassiveMode());
             $this->sync . ucwords($strActionMethodName)($file);
         }
     }

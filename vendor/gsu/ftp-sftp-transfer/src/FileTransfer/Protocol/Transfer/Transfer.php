@@ -46,6 +46,7 @@ abstract class Transfer
     protected $arCurrentPathReceiver = [];
     protected $isMkDirLogMode = false;
     protected $isPassiveConnectionMode = true;
+    protected $strTransferMode = \FTP_BINARY;
 
     ///////////////////////////////////////////////////////////////////
     protected function prepareArguments()
@@ -89,7 +90,8 @@ abstract class Transfer
         $this->unsetSearchingFilesFilter();
         $this->clearCurrentPathOrigin();
         $this->clearFullNamesFilesList();
-        $this->pasv($this->enablePassiveConnectionMode());
+        $this->setDefaultConnectionMode();
+        $this->setDefaultTransferMode();
 
     }
 
@@ -109,6 +111,33 @@ abstract class Transfer
     public function isPassiveMode()
     {
         return $this->isPassiveMode;
+    }
+
+    protected function setDefaultConnectionMode()
+    {
+        $this->pasv($this->enablePassiveConnectionMode());
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function setBinaryTransferMode()
+    {
+        return $this->strTransferMode = \FTP_BINARY;
+    }
+
+    public function setTextualTransferMode()
+    {
+        return $this->strTransferMode = \FTP_ASCII;
+    }
+
+    public function getTransferMode()
+    {
+        return $this->strTransferMode;
+    }
+
+    protected function setDefaultTransferMode()
+    {
+        $this->setBinaryTransferMode();
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -544,12 +573,12 @@ abstract class Transfer
 
     protected function syncTransferDownload($file)
     {
-        return $this->get($file, $file, \FTP_BINARY);
+        return $this->get($file, $file, $this->getTransferMode());
     }
 
     protected function syncTransferUpload($file)
     {
-        return $this->put($file, $file, \FTP_BINARY);
+        return $this->put($file, $file, $this->getTransferMode());
     }
 
 
@@ -614,14 +643,14 @@ abstract class Transfer
     {
         $strRemoteFile = current($strRemoteFile);
         $strLocalFile = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . $strRemoteFile;
-        return [$strLocalFile, $strRemoteFile, \FTP_BINARY];
+        return [$strLocalFile, $strRemoteFile, $this->getTransferMode()];
     }
 
     protected function upload($strLocalFile)
     {
         $strLocalFile = current($strLocalFile);
         $strRemoteFile = $strLocalFile;
-        return [$strRemoteFile, $strLocalFile, \FTP_BINARY];
+        return [$strRemoteFile, $strLocalFile, $this->getTransferMode()];
     }
 
     /////////////////////////////////////////////

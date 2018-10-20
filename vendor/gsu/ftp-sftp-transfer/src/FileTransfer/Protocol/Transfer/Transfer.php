@@ -718,16 +718,28 @@ abstract class Transfer
 
     protected function download($strRemoteFile)
     {
-        $strRemoteFile = current($strRemoteFile);
-        $strLocalFile = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . $strRemoteFile;
-        return [$strLocalFile, $strRemoteFile, $this->getTransferMode()];
+        if(is_array($strRemoteFile)) {
+            foreach($strRemoteFile as $file) {
+                $this->download($file);
+            }
+        } else {
+            $strRemoteFile = current($strRemoteFile);
+            $strLocalFile = $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . $strRemoteFile;
+            return [$strLocalFile, $strRemoteFile, $this->getTransferMode()];
+        }
     }
 
     protected function upload($strLocalFile)
     {
-        $strLocalFile = current($strLocalFile);
-        $strRemoteFile = $strLocalFile;
-        return [$strRemoteFile, $strLocalFile, $this->getTransferMode()];
+        if(is_array($strLocalFile)) {
+            foreach($strLocalFile as $file) {
+                $this->upload($file);
+            }
+        } else {
+            $strLocalFile = current($strLocalFile);
+            $strRemoteFile = $strLocalFile;
+            return [$strRemoteFile, $strLocalFile, $this->getTransferMode()];
+        }
     }
 
     /////////////////////////////////////////////

@@ -239,8 +239,6 @@ try {
 }
 
 
-
-
 echo "Example #11<br>";
 try {
     $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
@@ -281,6 +279,21 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
+
+
+echo "Example #12<br>";
+try {
+    $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+
+    $conn->download(['admin-bar.php', 'index.php']);
+    $conn->upload(['1MB.zip', 'index.php']);
+
+    echo "files transfer done<br>";
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
 
 
 

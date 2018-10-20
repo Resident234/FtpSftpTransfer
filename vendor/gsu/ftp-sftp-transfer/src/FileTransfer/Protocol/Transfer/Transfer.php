@@ -37,7 +37,8 @@ abstract class Transfer
         "Direction" => "Download",
         "OverwriteMode" => "overwrite",
         "Recursively" => true,
-        "Action" => "transfer"
+        "Action" => "transfer",
+        "Swap" => "copy"
     );
 
     protected $arFullNamesFilesList = [];
@@ -47,6 +48,7 @@ abstract class Transfer
     protected $isMkDirLogMode = false;
     protected $isPassiveConnectionMode = true;
     protected $strTransferMode = \FTP_BINARY;
+    protected $enumSwapMode = "copy"; // copy | move
 
     ///////////////////////////////////////////////////////////////////
     protected function prepareArguments()
@@ -92,7 +94,7 @@ abstract class Transfer
         $this->clearFullNamesFilesList();
         $this->setDefaultConnectionMode();
         $this->setDefaultTransferMode();
-
+        $this->setDefaultSwapMode();
     }
 
 
@@ -138,6 +140,23 @@ abstract class Transfer
     protected function setDefaultTransferMode()
     {
         $this->setBinaryTransferMode();
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function setSwapMode($strSwapMode)
+    {
+        $this->enumSwapMode = $strSwapMode;
+    }
+
+    public function getSwapMode()
+    {
+        return $this->enumSwapMode;
+    }
+
+    protected function setDefaultSwapMode()
+    {
+        $this->setSwapMode($this->arDefaultValues["Swap"]);
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -223,6 +242,23 @@ abstract class Transfer
 
     }
 
+
+    /*private function actionMovePreparingBeforeSync()
+    {
+
+    }
+
+    private function actionMovePreparingAfterSync()
+    {
+
+    }
+
+    private function actionMoveSync()
+    {
+
+    }*/
+    ///////////////////////////////////
+
     private function searchingPreparingBefore()
     {
         if($this->isSearchingFilesFilter()) {
@@ -303,6 +339,8 @@ abstract class Transfer
             } else {
                 $strActionMethodName = $this->getAction();
                 $this->syncAction($file, $strActionMethodName);
+                $this->syncSwapFile . ucwords($this->getSwapMode())($file);
+
                 //$this->pasv(true);
                 //$this->sync . ucwords($strActionMethodName)($file);
 
@@ -317,8 +355,12 @@ abstract class Transfer
             $this->syncChdirReceiver("..");
         }
 
+        $this->syncSwapFolder . ucwords($this->getSwapMode())($strOriginFolder);
+
     }
 
+    /// ftp_rmdir
+    /// ftp_delete
 
     /////////////////////////////////////////////
     protected function clearFullNamesFilesList()
@@ -485,6 +527,28 @@ abstract class Transfer
     }
 
     ///////////////////////////////////
+    protected function syncSwapFileCopy($file)
+    {
+        return true;
+    }
+
+    protected function syncSwapFileMove($file)
+    {
+        $this->delete($file);
+        return true;
+    }
+
+    protected function syncSwapFolderCopy($folder)
+    {
+        return true;
+    }
+
+    protected function syncSwapFolderMove($folder)
+    {
+        $this->rmdir($folder);
+        return true;
+    }
+    ///////////////////////////////////
     protected function syncChdirOriginDownload($strFolder)
     {
 
@@ -580,6 +644,19 @@ abstract class Transfer
     {
         return $this->put($file, $file, $this->getTransferMode());
     }
+
+
+    /*protected function syncMoveDownload($file)
+    {
+        $this->get($file, $file, $this->getTransferMode());
+        return true;
+    }
+
+    protected function syncMoveUpload($file)
+    {
+        $this->put($file, $file, $this->getTransferMode());
+        return true;
+    }*/
 
 
     ///////////////////////////////////

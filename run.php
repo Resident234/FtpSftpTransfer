@@ -241,8 +241,46 @@ try {
 
 
 
+echo "Example #11<br>";
+try {
+    $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+
+    $conn->setSwapMode("move");
+
+    $conn->download('admin-bar.php');
+    $conn->download('bookmark.php');
+    $conn->upload('1MB.zip');
+    $conn->downloadFolder('fonts');
+    //$conn->downloadFolder('wp-includes');
+    $conn->downloadFolder('libs/jquery-validation');
+    $conn->downloadFolder('skills', 'downloads/skills');
+    $conn->downloadFolder('info', 'downloads/1/2/3/info');
+    $conn->downloadFolder('info', 'downloads/77/info');
+    $conn->downloadFolder('info', 'downloads/88/info');
+    $conn->downloadFolder('libs/jquery-validation', 'downloads/libs/jquery-validation');
+    $conn->downloadFolder('skills', 'downloads/skills_local');
+    $conn->downloadFolder('skills', 'skills_local');
+
+    $conn->uploadFolder('fonts');
+    $conn->uploadFolder('fonts', 'uploads/fonts');
+    //$conn->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn->uploadFolder('fonts', 'uploads/1/2/3/fonts');
+    $conn->uploadFolder('fonts', 'uploads/77/fonts');
+    $conn->uploadFolder('fonts', 'uploads/88/fonts');
+    $conn->uploadFolder('libs/jquery-validation', 'uploads/libs/jquery-validation');
+    $conn->uploadFolder('fonts', 'uploads/99/fonts');
+
+    $conn->search('Anorexia.ttf'); echo "<hr><hr>";
+    $conn->search('index'); echo "<hr><hr>";
+    $conn->search('index.php', 'libs/jquery-validation'); echo "<hr><hr>";
+    $conn->search('index.php', 'libs/jquery-validation', false); echo "<hr><hr>";
 
 
+    echo "move done<br>";
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 
 

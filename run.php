@@ -294,75 +294,29 @@ try {
     echo $e->getMessage();
 }
 
-
-
-
-
-
-
-
-
-
-/*
+echo "Example #13<br>";
 try {
     $conn = $factory->getConnection('ssh', 'gsu123ln_personal', ['public_key', 'private_key'], 'gsu123ln.beget.tech', 22);
-    $conn->cd('/var/www')
-        ->download('dump.tar.gz')
-        ->close();
+
+    $conn->download(['admin-bar.php', 'index.php']);
+    $conn->upload(['1MB.zip', 'index.php']);
+
+    echo "files transfer done<br>";
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }
 
+
+echo "Example #14<br>";
 try {
-    $conn = $factory->getConnection('ftp', 'user', 'pass', 'hostname.com');
-    echo $conn->pwd() . "\n";
-    $conn->upload('archive.zip');
-    print_r($conn->exec('ls -al'));
+    $conn = $factory->getConnection('ssh', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+
+    $conn->download(['admin-bar.php', 'index.php']);
+    $conn->upload(['1MB.zip', 'index.php']);
+
+    echo "files transfer done<br>";
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-*/
-
-
-/*
-// Create SCP connection using a username and password
-$scp = new SCP(
-        'example.com',
-        new Password('username', 'password')
-);
-// Receive a file via SCP
-if ($scp->recv('remote/file', 'local/file')) {
-        echo 'Successfully received file';
-}
-
-// Create SFTP connection using a public/private key
-$sftp = new SSH2SFTP(
-        'example.com',
-        new Key('username', 'public_key', 'private_key')
-);
-// Create a directory via SFTP
-if ($sftp->mkdir('directory/name')) {
-        echo 'Successfully created directory';
-}
- */
-
-/*
-//$conn = new Connection('ftp://speedtest.tele2.net');
-//phpinfo();
-
-
-echo function_exists('ssh2_connect');
-if(function_exists('ssh2_connect')) echo 'ssh2_connect';
-$conn = new Connection('ftp://gsu123ln_personal:w4z&0GH0@gsu123ln.beget.tech');
-
-//$conn = new Connection('sftp://gsu123ln_personal:w4z&0GH0@gsu123ln.beget.tech:22');
-
-//print_r($conn->ls());
-
-//Display contents of the README file
-//$conn->get('wp-config.php');
-
-//$conn->cd("upload");
-//echo $conn->pwd();
-//$conn->put('50MB.zip', '50MB_GSU.zip');
-*/

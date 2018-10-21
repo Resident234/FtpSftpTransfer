@@ -50,6 +50,45 @@ abstract class Transfer
     protected $strTransferMode = \FTP_BINARY;
     protected $enumSwapMode = "copy"; // copy | move
 
+    protected $arNlistCache = [];
+
+    protected $connectionType;
+    protected $connectionUser;
+    protected $connectionPass;
+    protected $connectionHostname;
+
+    ///////////////////////////////////////////////////////////////////
+    protected function addToCache($data, $arTags)
+    {
+        return $this->arNlistCache[implode("|", $arTags)] = $data;
+    }
+
+    protected function checkCache($arTags)
+    {
+        $strTags = implode("|", $arTags);
+        if($this->arNlistCache[$strTags]) {
+            return $this->arNlistCache[$strTags];
+        } else {
+            return false;
+        }
+    }
+
+    protected function clearAllCache()
+    {
+        $this->arNlistCache = [];
+    }
+
+    protected function clearCacheByTag($arTags)
+    {
+        unset($this->arNlistCache[implode("|", $arTags)]);
+    }
+
+    protected function getCacheTags($arAdditionalsTags)
+    {
+        return implode("|", array_merge([$this->connectionHostname, $this->connectionType, $this->connectionUser, $this->connectionPass, $this->pwd()], $arAdditionalsTags));
+    }
+
+
     ///////////////////////////////////////////////////////////////////
     protected function prepareArguments()
     {
@@ -97,7 +136,36 @@ abstract class Transfer
         $this->setDefaultSwapMode();
     }
 
+    ///////////////////////////////////////////////////////////////////
 
+    protected function setConnectionParameters($type, $user, $pass, $hostname)
+    {
+        $this->connectionType = $type;
+        $this->connectionUser = $user;
+        $this->connectionPass = $pass;
+        $this->connectionHostname = $hostname;
+    }
+
+    protected function getConnectionType()
+    {
+        return $this->connectionType;
+    }
+
+    protected function getConnectionUser()
+    {
+        return $this->connectionUser;
+    }
+
+    protected function getConnectionPass()
+    {
+        if(is_array($this->connectionPass)) return implode("|", $this->connectionPass);
+        return $this->connectionPass;
+    }
+
+    protected function getConnectionHostname()
+    {
+        return $this->connectionHostname;
+    }
     ///////////////////////////////////////////////////////////////////
 
     public function enablePassiveConnectionMode()
@@ -610,21 +678,29 @@ abstract class Transfer
 
     protected function syncNlistDownload($strFolder)
     {
-        return $this->nlist($strFolder);
+        if($nlist = $this->checkCache($this->getCacheTags([$strFolder, "Download"]))) {
+            return $nlist;
+        } else {
+            return $this->addToCache($this->nlist($strFolder), $this->getCacheTags([$strFolder, "Download"]));
+        }
     }
 
 
     protected function syncNlistUpload($strFolder)
     {
-        $arFiles = array();
-        $all = opendir($strFolder);
-        while ($file = readdir($all)) {
-            $arFiles[] = $file;
-        }
-        closedir($all);
-        unset($all);
+        if($nlist = $this->checkCache($this->getCacheTags([$strFolder, "Upload"]))) {
+            return $nlist;
+        } else {
+            $arFiles = array();
+            $all = opendir($strFolder);
+            while ($file = readdir($all)) {
+                $arFiles[] = $file;
+            }
+            closedir($all);
+            unset($all);
 
-        return $arFiles;
+            return $this->addToCache($arFiles, $this->getCacheTags([$strFolder, "Upload"]));
+        }
     }
 
     /*protected function getLocalDirContent($strFolder){

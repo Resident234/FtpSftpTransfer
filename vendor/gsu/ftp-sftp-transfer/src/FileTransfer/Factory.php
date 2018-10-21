@@ -50,6 +50,7 @@ class Factory
 
         $this->connection = new $transferClassName($hostname, $auth, $port);
         $this->connection->setDefaultParameters();
+        $this->connection->setConnectionParameters($type, $user, $pass, $hostname);
 
         return $this->connection;
 

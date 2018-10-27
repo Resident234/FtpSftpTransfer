@@ -333,9 +333,56 @@ try {
     $conn1->upload(['1MB.zip', 'index.php']);
     $conn2->downloadFolder('info', 'downloads/1/2/3/info');
 
-    echo "files transfer 1 done<br>";
+    echo "files transfer done<br>";
 
 } catch (Exception $e) {
     echo $e->getMessage();
 }
 
+echo "Example #15<br>";
+try {
+    $conn1 = $factory->getConnection('ssh', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+    $conn2 = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+    $conn3 = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+
+    $conn3->download('admin-bar.php');
+    $conn3->download('bookmark.php');
+    $conn3->upload('1MB.zip');
+    $conn3->upload('50MB.zip');
+    $conn3->download('50MB.zip');
+    $conn3->downloadFolder('fonts');
+    $conn3->downloadFolder('wp-includes');
+    $conn3->downloadFolder('libs/jquery-validation');
+    $conn3->downloadFolder('skills', 'downloads/skills');
+    $conn3->downloadFolder('info', 'downloads/1/2/3/info');
+    $conn3->downloadFolder('info', 'downloads/77/info');
+    $conn3->downloadFolder('info', 'downloads/88/info');
+    $conn3->downloadFolder('libs/jquery-validation', 'downloads/libs/jquery-validation');
+    $conn3->downloadFolder('skills', 'downloads/skills_local');
+    $conn3->downloadFolder('skills', 'skills_local');
+
+    $conn3->uploadFolder('fonts');
+    $conn3->uploadFolder('fonts', 'uploads/fonts');
+    $conn3->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn3->uploadFolder('fonts', 'uploads/1/2/3/fonts');
+    $conn3->uploadFolder('fonts', 'uploads/77/fonts');
+    $conn3->uploadFolder('fonts', 'uploads/88/fonts');
+    $conn3->uploadFolder('libs/jquery-validation', 'uploads/libs/jquery-validation');
+    $conn3->uploadFolder('fonts', 'uploads/99/fonts');
+
+    $conn3->search('Anorexia.ttf'); echo "<hr><hr>";
+    $conn3->search('index'); echo "<hr><hr>";
+    $conn3->search('index.php', 'libs/jquery-validation'); echo "<hr><hr>";
+    $conn3->search('index.php', 'libs/jquery-validation', false); echo "<hr><hr>";
+
+    $conn2->downloadFolder('libs/jquery-validation');
+    $conn1->download(['admin-bar.php', 'index.php']);
+    $conn2->downloadFolder('skills', 'downloads/skills');
+    $conn1->upload(['1MB.zip', 'index.php']);
+    $conn2->downloadFolder('info', 'downloads/1/2/3/info');
+
+    echo "files transfer done<br>";
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}

@@ -320,3 +320,22 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
+
+
+echo "Example #15<br>";
+try {
+    $conn1 = $factory->getConnection('ssh', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+    $conn2 = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
+
+    $conn2->downloadFolder('libs/jquery-validation');
+    $conn1->download(['admin-bar.php', 'index.php']);
+    $conn2->downloadFolder('skills', 'downloads/skills');
+    $conn1->upload(['1MB.zip', 'index.php']);
+    $conn2->downloadFolder('info', 'downloads/1/2/3/info');
+
+    echo "files transfer 1 done<br>";
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+

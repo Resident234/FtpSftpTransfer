@@ -24,6 +24,10 @@ abstract class Transfer
     protected $arSearchingFilesFilter = "";
     protected $isRecursively = true;
     protected $enumAction = "transfer"; // transfer | list
+    protected $numberFolderSize = 0;// bytes
+    protected $numberFolderCountFiles;
+    protected $numberFolderCurrentSize = 0;
+    protected $numberFolderCurrentCountFiles;
 
     protected $arCustomFunctions = array(
         "cd" => "chdir",
@@ -38,7 +42,8 @@ abstract class Transfer
         "OverwriteMode" => "overwrite",
         "Recursively" => true,
         "Action" => "transfer",
-        "Swap" => "copy"
+        "Swap" => "copy",
+        "ShowProgress" => "disable" //disable | enable
     );
 
     protected $arFullNamesFilesList = [];
@@ -49,6 +54,7 @@ abstract class Transfer
     protected $isPassiveConnectionMode = true;
     protected $strTransferMode = \FTP_BINARY;
     protected $enumSwapMode = "copy"; // copy | move
+    protected $isShowProgress = false;
 
     protected $arNlistCache = [];
 
@@ -56,6 +62,34 @@ abstract class Transfer
     protected $connectionUser;
     protected $connectionPass;
     protected $connectionHostname;
+
+    protected $arDirectionPlaceMap = array(
+        "Origin" => array("Download" => "Remote", "Upload" => "Local"),
+        "Receiver" => array("Download" => "Local", "Upload" => "Remote")
+    );
+
+    protected $strCurrentTransferedFolder = "";
+
+    ///////////////////////////////////////////////////////////////////
+    protected function setFolderCurrentSize($numberFolderCurrentSize)
+    {
+        $this->numberFolderCurrentSize = $numberFolderCurrentSize;
+    }
+
+    protected function setFolderCurrentCountFiles($numberFolderCurrentCountFiles)
+    {
+        $this->numberFolderCurrentCountFiles = $numberFolderCurrentCountFiles;
+    }
+
+    protected function setFolderDefaultCurrentSize()
+    {
+        $this->setFolderCurrentSize(0);
+    }
+
+    protected function setFolderDefaultCurrentCountFiles()
+    {
+        $this->setFolderCurrentCountFiles(0);
+    }
 
     ///////////////////////////////////////////////////////////////////
     protected function addToCache($data, $arTags)
@@ -134,6 +168,7 @@ abstract class Transfer
         $this->setDefaultConnectionMode();
         $this->setDefaultTransferMode();
         $this->setDefaultSwapMode();
+        $this->setDefaultShowProgress();
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -229,6 +264,39 @@ abstract class Transfer
 
     ///////////////////////////////////////////////////////////////////
 
+    public function enableShowProgress()
+    {
+        $this->isShowProgress = true;
+    }
+
+    public function disableShowProgress()
+    {
+        $this->isShowProgress = false;
+    }
+
+    protected function getShowProgress()
+    {
+        return $this->isShowProgress;
+    }
+
+    protected function setDefaultShowProgress()
+    {
+        $strShowProgress = $this->arDefaultValues["ShowProgress"];
+        $this->$strShowProgress . ShowProgress();
+
+        $this->setFolderDefaultCurrentSize();
+        $this->setFolderDefaultCurrentCountFiles();
+    }
+
+    protected function getCurrentShowProgressPrefix()
+    {
+        if($this->getShowProgress()) return "nb";
+        else return "";
+    }
+
+
+    ///////////////////////////////////////////////////////////////////
+
     public function search(
         $strNeedleFileName,
         $strHaystackFolderName = ".",
@@ -311,20 +379,6 @@ abstract class Transfer
     }
 
 
-    /*private function actionMovePreparingBeforeSync()
-    {
-
-    }
-
-    private function actionMovePreparingAfterSync()
-    {
-
-    }
-
-    private function actionMoveSync()
-    {
-
-    }*/
     ///////////////////////////////////
 
     private function searchingPreparingBefore()
@@ -346,6 +400,8 @@ abstract class Transfer
     public function downloadFolder($strRemoteFolder, $strLocalFolder = "")
     {
         $this->setDirection("Download");
+        $this->strCurrentTransferedFolder = $strRemoteFolder;
+        $this->preparingTransferFolder . ucwords($this->getCurrentShowProgressPrefix())($strRemoteFolder);
         $this->sync($strRemoteFolder, $strLocalFolder);
         $this->setDefaultDirection();
 
@@ -354,16 +410,124 @@ abstract class Transfer
     public function uploadFolder($strLocalFolder, $strRemoteFolder = "")
     {
         $this->setDirection("Upload");
+        $this->strCurrentTransferedFolder = $strLocalFolder;
+        $this->preparingTransferFolder . ucwords($this->getCurrentShowProgressPrefix())($strLocalFolder);
         $this->sync($strLocalFolder, $strRemoteFolder);
         $this->setDefaultDirection();
 
     }
 
     ///////////////////////////////////
+    protected function preparingTransferFolder($strFolder)
+    {
+
+    }
+
+    protected function preparingTransferFolderNB($strFolder)
+    {
+        $strPlace = $this->arDirectionPlaceMap["Origin"][$this->getDirection()];
+        $this->set . $strPlace . FolderSize($strFolder);
+        $this->set . $strPlace . FolderCountFiles($strFolder);
+
+    }
+
+    ///////////////////////////////////
+    protected function setLocalFolderSize($strLocalFolder)
+    {
+        if($this->numberFolderSize = $this->checkCache($this->getCacheTags([__FUNCTION__, $strLocalFolder, $this->getDirection()]))) {
+            return $this->numberFolderSize;
+        } else {
+            $this->numberFolderSize = 0;
+            foreach (glob(rtrim($strLocalFolder, '/').'/*', GLOB_NOSORT) as $each) {
+                $this->numberFolderSize += is_file($each) ? filesize($each) : folderSize($each);
+            }
+            return $this->addToCache($this->numberFolderSize, $this->getCacheTags([__FUNCTION__, $strLocalFolder, $this->getDirection()]));
+        }
+
+    }
+
+    protected function setRemoteFolderSize($strRemoteFolder)
+    {
+        if($this->numberFolderSize = $this->checkCache($this->getCacheTags([__FUNCTION__, $strRemoteFolder, $this->getDirection()]))) {
+            return $this->numberFolderSize;
+        } else {
+
+            $this->numberFolderSize = 0;
+
+            $numberTotalSize = 0;
+            $contentsOnServer = $this->nlist($strRemoteFolder);
+            foreach ($contentsOnServer as $userFile) {
+                if ($this->size($userFile) == -1) {
+                    $directory = $userFile;
+                    $this->setRemoteFolderSize($directory);
+                } else {
+                    $numberTotalSize += $this->size($userFile);
+                }
+            }
+
+            $this->numberFolderSize = $numberTotalSize;
+
+            return $this->addToCache($this->numberFolderSize, $this->getCacheTags([__FUNCTION__, $strRemoteFolder, $this->getDirection()]));
+        }
+
+    }
+
+    protected function getFolderSize()
+    {
+        return $this->numberFolderSize;
+    }
+
+    ///////////////////////////////////
+    protected function setLocalFolderCountFiles($strLocalFolder)
+    {
+        if($this->numberFolderCountFiles = $this->checkCache($this->getCacheTags([__FUNCTION__, $strLocalFolder, $this->getDirection()]))) {
+            return $this->numberFolderCountFiles;
+        } else {
+            $this->numberFolderCountFiles = 0;
+            $files = glob($strLocalFolder . '/{,.}*');
+
+            if ( $files !== false )
+            {
+                $this->numberFolderCountFiles = count( $files );
+            }
+            return $this->addToCache($this->numberFolderCountFiles, $this->getCacheTags([__FUNCTION__, $strLocalFolder, $this->getDirection()]));
+        }
+
+    }
+
+    protected function setRemoteFolderCountFiles($strRemoteFolder)
+    {
+        if($this->numberFolderCountFiles = $this->checkCache($this->getCacheTags([__FUNCTION__, $strRemoteFolder, $this->getDirection()]))) {
+            return $this->numberFolderCountFiles;
+        } else {
+            $this->numberFolderCountFiles = 0;
+
+            $numberCountFiles = 0;
+            $contentsOnServer = $this->nlist($strRemoteFolder);
+            foreach ($contentsOnServer as $userFile) {
+                if ($this->size($userFile) == -1) {
+                    $directory = $userFile;
+                    $this->setRemoteFolderCountFiles($directory);
+                } else {
+                    $numberCountFiles++;
+                }
+            }
+
+            $this->numberFolderCountFiles = $numberCountFiles;
+
+            return $this->addToCache($this->numberFolderCountFiles, $this->getCacheTags([__FUNCTION__, $strRemoteFolder, $this->getDirection()]));
+        }
+
+    }
+
+    protected function getFolderCountFiles()
+    {
+        return $this->numberFolderCountFiles;
+    }
+
+    ///////////////////////////////////
     protected function sync($strOriginFolder, $strReceiverFolder = "")
     {
-        //echo $strOriginFolder . " OriginFolder<br>";
-        //echo $strReceiverFolder . " ReceiverFolder<br>";
 
         if (empty($strReceiverFolder)) {
             $strReceiverFolder = $strOriginFolder;
@@ -390,10 +554,6 @@ abstract class Transfer
 
         $contents = $this->syncNlist(".");
 
-        echo "contents<pre>";
-        print_r($contents);
-        echo "</pre>";
-
         foreach ($contents as $file) {
 
             if ($file == '.' || $file == '..') {
@@ -409,9 +569,6 @@ abstract class Transfer
                 $this->syncAction($file, $strActionMethodName);
                 $this->syncSwapFile . ucwords($this->getSwapMode())($file);
 
-                //$this->pasv(true);
-                //$this->sync . ucwords($strActionMethodName)($file);
-
             }
         }
 
@@ -426,9 +583,6 @@ abstract class Transfer
         $this->syncSwapFolder . ucwords($this->getSwapMode())($strOriginFolder);
 
     }
-
-    /// ftp_rmdir
-    /// ftp_delete
 
     /////////////////////////////////////////////
     protected function clearFullNamesFilesList()
@@ -581,8 +735,20 @@ abstract class Transfer
 
     protected function syncTransfer($file)
     {
+        $this->syncFolderTransfer . $this->getCurrentShowProgressPrefix()($file);
         $method = __FUNCTION__ . $this->enumDirection;
         return $this->$method($file);
+    }
+
+    protected function syncFolderTransferNB($file)
+    {
+        echo $this->strCurrentTransferedFolder . ": " . $this->humanFilesize($this->numberFolderCurrentSize += $this->get . $this->arDirectionPlaceMap["Origin"][$this->getDirection()] . FileSize($file)) . " / " . $this->humanFilesize($this->numberFolderSize) . ", ";
+        echo $this->humanFilesize($this->numberFolderCurrentCountFiles++) . " / " . $this->humanFilesize($this->numberFolderCountFiles) . "\n";
+    }
+
+    protected function syncFolderTransfer()
+    {
+
     }
 
     protected function syncList($file)
@@ -685,7 +851,6 @@ abstract class Transfer
         }
     }
 
-
     protected function syncNlistUpload($strFolder)
     {
         if($nlist = $this->checkCache($this->getCacheTags([$strFolder, "Upload"]))) {
@@ -703,37 +868,70 @@ abstract class Transfer
         }
     }
 
-    /*protected function getLocalDirContent($strFolder){
-
-    }
-
-    protected function getRemoteDirContent($strFolder){
-
-    }*/
-
     protected function syncTransferDownload($file)
     {
-        return $this->get($file, $file, $this->getTransferMode());
+        return syncFileTransfer . ucwords($this->getCurrentShowProgressPrefix())($file, "get");
     }
 
     protected function syncTransferUpload($file)
     {
-        return $this->put($file, $file, $this->getTransferMode());
+        return syncFileTransfer . ucwords($this->getCurrentShowProgressPrefix())($file, "put");
     }
 
-
-    /*protected function syncMoveDownload($file)
+    protected function syncFileTransferNB($file, $strDirection)
     {
-        $this->get($file, $file, $this->getTransferMode());
-        return true;
+        $strRet = $this->nb_ . $strDirection($file, $file, $this->getTransferMode());
+
+        while ($strRet == FTP_MOREDATA) {
+            echo $this->pwd() . "/" . $file . ": " . $this->getSyncFileTransferDirection . ucwords($strDirection) . PercentProgress($file, $file) . " %";
+            echo $this->getSyncFileTransferDirection . ucwords($strDirection) . SizeProgress($file, $file);
+
+            $strRet = $this->nb_continue();
+        }
+
+        return $strRet;
     }
 
-    protected function syncMoveUpload($file)
+    protected function syncFileTransfer($file, $strDirection)
     {
-        $this->put($file, $file, $this->getTransferMode());
-        return true;
-    }*/
+        return $this->$strDirection($file, $file, $this->getTransferMode());
+    }
 
+    protected function getSyncFileTransferDirectionGetPercentProgress($localFile, $remoteFile)
+    {
+        return round(($this->getLocalFileSize($localFile) / $this->getRemoteFileSize($remoteFile)) * 100);
+    }
+
+    protected function getSyncFileTransferDirectionPutPercentProgress($remoteFile, $localFile)
+    {
+        return round(($this->getRemoteFileSize($remoteFile) / $this->getLocalFileSize($localFile)) * 100);
+    }
+
+    protected function getSyncFileTransferDirectionGetSizeProgress($localFile, $remoteFile)
+    {
+        return humanFilesize($this->getLocalFileSize($localFile)) . " / " . humanFilesize($this->getRemoteFileSize($remoteFile));
+    }
+
+    protected function getSyncFileTransferDirectionPutSizeProgress($remoteFile, $localFile)
+    {
+        return humanFilesize($this->getRemoteFileSize($remoteFile)) . " / " . humanFilesize($this->getLocalFileSize($localFile));
+    }
+
+    protected function getRemoteFileSize($remoteFile)
+    {
+        return $this->size($remoteFile);
+    }
+
+    protected function getLocalFileSize($localFile)
+    {
+        return filesize($localFile);
+    }
+
+    protected function humanFilesize($bytes, $decimals = 2) {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+    }
 
     ///////////////////////////////////
 

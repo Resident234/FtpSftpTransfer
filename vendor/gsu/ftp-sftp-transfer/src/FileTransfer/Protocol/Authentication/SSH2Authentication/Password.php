@@ -15,6 +15,14 @@ class Password extends \FileTransfer\Protocol\Authentication\Authentication
 
     public function __construct($username, $password)
     {
+        if(!$username || !is_string($username)) {
+            throw new \Exception(Helper::camelCaseToText("Authentication") . ' error: incorrect ' . Helper::camelCaseToText("username"));
+        }
+
+        if((!is_string($password))) {
+            throw new \Exception(Helper::camelCaseToText("Authentication") . ' error: incorrect ' . Helper::camelCaseToText("password"));
+        }
+
         $this->username = $username;
         $this->password = $password;
     }

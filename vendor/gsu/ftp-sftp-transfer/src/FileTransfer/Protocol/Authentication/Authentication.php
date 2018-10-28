@@ -21,6 +21,6 @@ abstract class Authentication
 
     public function authenticate()
     {
-        throw new Exception('Method "authenticate" must be defined.');
+        throw new \Exception('Method "authenticate" must be defined');
     }
 }

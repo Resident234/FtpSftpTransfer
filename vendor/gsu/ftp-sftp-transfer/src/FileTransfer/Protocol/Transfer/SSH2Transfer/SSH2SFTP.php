@@ -13,10 +13,20 @@ class SSH2SFTP extends FileTransfer\Protocol\Transfer\SSH2
 
     protected $sftp;
 
-    // new SSH2Password('username', 'password') or new SSH2Key('username', 'public_key', 'private_key')
-    //$hostname, $user, $pass, $port
     public function __construct($host, \FileTransfer\Protocol\Authentication\Authentication $auth, $port = 22)
     {
+        if(!$host || !is_string($host)) {
+            throw new \Exception(Helper::camelCaseToText("SFTP") . ' error: incorrect ' . Helper::camelCaseToText("host"));
+        }
+
+        if((!is_number($port))) {
+            throw new \Exception(Helper::camelCaseToText("SFTP") . ' error: incorrect ' . Helper::camelCaseToText("port"));
+        }
+
+        if (!($auth instanceof \FileTransfer\Protocol\Authentication\Authentication)) {
+            throw new \Exception(Helper::camelCaseToText("SFTP") . ' error: incorrect ' . Helper::camelCaseToText("auth"));
+        }
+
         $this->strFunctionPrefix = 'ssh2_sftp_';
         parent::__construct($host, $auth, $port);
         $this->sftp = ssh2_ftp($this->conn);
@@ -33,7 +43,7 @@ class SSH2SFTP extends FileTransfer\Protocol\Transfer\SSH2
             array_unshift($this->args, $this->sftp);
             return call_user_func_array($this->func, $this->args);
         } else {
-            throw new Exception($this->func . ' is not a valid SFTP function.');
+            throw new Exception($this->func . ' is not a valid SFTP function');
         }
     }
 }

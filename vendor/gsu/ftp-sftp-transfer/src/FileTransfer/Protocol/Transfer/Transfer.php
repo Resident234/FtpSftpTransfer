@@ -1,10 +1,4 @@
 <?php
-/**
- * Interface for backend types
- *
- * @author Tuomas Angervuori <tuomas.angervuori@gmail.com>
- * @license http://opensource.org/licenses/LGPL-3.0 LGPL v3
- */
 
 namespace FileTransfer\Protocol\Transfer;
 
@@ -73,12 +67,16 @@ abstract class Transfer
     ///////////////////////////////////////////////////////////////////
     protected function setFolderCurrentSize($numberFolderCurrentSize)
     {
-        $this->numberFolderCurrentSize = $numberFolderCurrentSize;
+        if(!$numberFolderCurrentSize) $numberFolderCurrentSize = 0;
+
+        $this->numberFolderCurrentSize = floatval($numberFolderCurrentSize);
     }
 
     protected function setFolderCurrentCountFiles($numberFolderCurrentCountFiles)
     {
-        $this->numberFolderCurrentCountFiles = $numberFolderCurrentCountFiles;
+        if(!$numberFolderCurrentCountFiles) $numberFolderCurrentCountFiles = 0;
+
+        $this->numberFolderCurrentCountFiles = intval($numberFolderCurrentCountFiles);
     }
 
     protected function setFolderDefaultCurrentSize()
@@ -94,11 +92,17 @@ abstract class Transfer
     ///////////////////////////////////////////////////////////////////
     protected function addToCache($data, $arTags)
     {
+        if(!$data || !$arTags) return false;
+        if(!is_array($data) || !is_array($arTags)) return false;
+
         return $this->arNlistCache[implode("|", $arTags)] = $data;
     }
 
     protected function checkCache($arTags)
     {
+        if(!$arTags) return false;
+        if(!is_array($arTags)) return false;
+
         $strTags = implode("|", $arTags);
         if($this->arNlistCache[$strTags]) {
             return $this->arNlistCache[$strTags];
@@ -114,11 +118,16 @@ abstract class Transfer
 
     protected function clearCacheByTag($arTags)
     {
-        unset($this->arNlistCache[implode("|", $arTags)]);
+        if($arTags && is_array($arTags)) {
+            unset($this->arNlistCache[implode("|", $arTags)]);
+        }
     }
 
     protected function getCacheTags($arAdditionalsTags)
     {
+        if(!$arAdditionalsTags) $arAdditionalsTags = [];
+        if(!is_array($arAdditionalsTags)) $arAdditionalsTags = [];
+
         return implode("|", array_merge([$this->connectionHostname, $this->connectionType, $this->connectionUser, $this->connectionPass, $this->pwd()], $arAdditionalsTags));
     }
 
@@ -935,13 +944,6 @@ abstract class Transfer
 
     ///////////////////////////////////
 
-
-    /**
-     * Test if a directory exist
-     *
-     * @param string $dir
-     * @return bool $is_dir
-     */
     private function isDir($dir)
     {
         $is_dir = false;

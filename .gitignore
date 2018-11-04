@@ -1,9 +1,8 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
-
-# IntelliJ project files
+.php_cs
+.php_cs.cache
+/vendor
+composer.lock
+composer.phar
+phpunit.xml
 .idea
 *.iml
-out
-gen

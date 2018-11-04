@@ -1,5 +1,37 @@
 {
-    "require": {
-        "gsu/ftp-sftp-transfer": "^0.1.0"
-    }
+	"name": "gsu/ftp-sftp-transfer",
+	"description": "A PHP class to transfer data using sftp and ftp protocols.",
+	"keywords": ["ftp","sftp","ssh"],
+	"homepage": "",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "GSU",
+			"email": "gsu1234@mail.ru",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"FileTransfer\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"FileTransfer\\": "tests/"
+		}
+	},
+	"require": {
+		"php": "^7.0.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~6.0"
+	},
+	"config": {
+		"preferred-install": "dist",
+		"sort-packages": true,
+		"optimize-autoloader": true
+	},
+	"minimum-stability": "stable"
+
 }

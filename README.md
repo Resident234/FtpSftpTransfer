@@ -1,31 +1,93 @@
-Connection.php
-==============
+# Transferer
 
-A PHP class to transfer data using different protocols (sftp, ftp, http, etc). Utilizes PHPs ssh2, ftp and curl functions if available.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/trafficgate/transferer.svg?style=flat-square)](https://packagist.org/packages/trafficgate/transferer)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-Installation
-------------
-The recommended way to install Connection.php is through [Composer](http://getcomposer.org).
-```json
-{
-	"require": {
-		"tangervu/connection": "dev-master"
-	}
-}
-```
+Helper PHP objects to handle rsync, scp, and ssh-based file transfers.
 
-Example
--------
+## rsync
+
+The available switches for rsync currently mirror those available in rsync on CentOS 6.x.
+
+The following switches are not yet implemented:
+  - turning off options with the `no-` prefix
+  - sending remote-only options with the `remote-` prefix
+
+Full documentation can be found in the RsyncTransfer class.
+
 ```php
 <?php
-require('vendor/autoload.php'); //Use composer autoload
-$conn = new Connection('ftp://ftp.funet.fi');
-//List directory contents
-print_r($conn->ls());
-//Display contents of the README file
-echo $conn->get('README');
+
+use Trafficgate\Transferer\Transfer\RsyncTransfer;
+
+$rsync = new RsyncTransfer();
+$rsync
+    ->source($source, $host = null, $user = null)
+    ->destination($destination, $host = null, $user = null)
+    ->transfer($idleTimeout = null);
 ```
 
-License
--------
-LGPL v3
+## scp
+
+The available switches for ssh currently mirror those available in rsync on CentOS 6.x.
+
+Full documentation can be found in the ScpTransfer class.
+
+```php
+<?php
+
+use Trafficgate\Transferer\Transfer\ScpTransfer;
+
+$scp = new ScpTransfer();
+$scp
+    ->source($source, $host = null, $user = null)
+    ->destination($destination, $host = null, $user = null)
+    ->transfer($idleTimeout = null);
+```
+
+## ssh
+
+The SSH implementation is very primitive. It will most likely be transferred to a different package in the future as it doesn't completely align with the goals of this package.
+
+It currently implements the following switches:
+
+  - Enable quiet mode
+
+    ```php
+    $ssh->quietMode($enabled = true)
+    ```
+
+  - Add a SSH configuration option
+
+    ```php
+    $ssh->configOptions($value, $remove = false, $enabled = true)
+    ```
+
+  - The host to connect to. This should include `username@` if it differs   from the user executing the PHP script.
+
+    ```php
+    $ssh->host($host)
+    ```
+
+  - The command to execute over SSH
+
+    ```php
+    $ssh->remoteCommand($command)
+    ```
+
+
+The command has quiet mode enabled by default along with the following SSH options:
+  - `BatchMode yes`
+  - `StrictHostKeyChecking no`
+  - `UserKnownHostsFile /dev/null`
+
+```php
+<?php
+
+use Trafficgate\Transferer\Ssh\SshCommand;
+
+$ssh = new SshCommand();
+$ssh
+    ->host($host)
+    ->remoteCommand($command);
+```

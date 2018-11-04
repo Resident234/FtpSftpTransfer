@@ -14,7 +14,7 @@ use FileTransfer as FT;
 
 $factory = new FT\Factory();
 
-/*
+
 echo "Example #1<br>";
 try {
     $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech', 21);
@@ -104,7 +104,7 @@ try {
     echo "<pre>";
     print_r($conn->mlsd("."));
     echo "</pre>";
-    * /
+    */
 
     echo "<pre>";
     print_r($conn->rawlist($conn->pwd()));
@@ -118,15 +118,15 @@ try {
 
 } catch (Exception $e) {
     echo $e->getMessage();
-}*/
+}
 
-/*
+
 echo "Example #7<br>";
 try {
     $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
 
     $conn->downloadFolder('fonts');
-    //$conn->downloadFolder('wp-includes');
+    $conn->downloadFolder('wp-includes');
     $conn->downloadFolder('libs/jquery-validation');
     $conn->downloadFolder('skills', 'downloads/skills');
     $conn->downloadFolder('info', 'downloads/1/2/3/info');
@@ -138,7 +138,7 @@ try {
 
     $conn->uploadFolder('fonts');
     $conn->uploadFolder('fonts', 'uploads/fonts');
-    //$conn->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn->uploadFolder('wp-includes', 'uploads/wp-includes');
     $conn->uploadFolder('fonts', 'uploads/1/2/3/fonts');
     $conn->uploadFolder('fonts', 'uploads/77/fonts');
     $conn->uploadFolder('fonts', 'uploads/88/fonts');
@@ -158,7 +158,7 @@ try {
 
     $conn->setOverwriteMode("skip");
     $conn->downloadFolder('fonts');
-    //$conn->downloadFolder('wp-includes');
+    $conn->downloadFolder('wp-includes');
     $conn->downloadFolder('libs/jquery-validation');
     $conn->downloadFolder('skills', 'downloads/skills');
     $conn->downloadFolder('info', 'downloads/1/2/3/info');
@@ -170,7 +170,7 @@ try {
 
     $conn->uploadFolder('fonts');
     $conn->uploadFolder('fonts', 'uploads/fonts');
-    //$conn->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn->uploadFolder('wp-includes', 'uploads/wp-includes');
     $conn->uploadFolder('fonts', 'uploads/1/2/3/fonts');
     $conn->uploadFolder('fonts', 'uploads/77/fonts');
     $conn->uploadFolder('fonts', 'uploads/88/fonts');
@@ -190,7 +190,7 @@ try {
 
     $conn->setOverwriteMode("rename");
     $conn->downloadFolder('fonts');
-    //$conn->downloadFolder('wp-includes');
+    $conn->downloadFolder('wp-includes');
     $conn->downloadFolder('libs/jquery-validation');
     $conn->downloadFolder('skills', 'downloads/skills');
     $conn->downloadFolder('info', 'downloads/1/2/3/info');
@@ -202,7 +202,7 @@ try {
 
     $conn->uploadFolder('fonts');
     $conn->uploadFolder('fonts', 'uploads/fonts');
-    //$conn->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn->uploadFolder('wp-includes', 'uploads/wp-includes');
     $conn->uploadFolder('fonts', 'uploads/1/2/3/fonts');
     $conn->uploadFolder('fonts', 'uploads/77/fonts');
     $conn->uploadFolder('fonts', 'uploads/88/fonts');
@@ -213,14 +213,14 @@ try {
 
 } catch (Exception $e) {
     echo $e->getMessage();
-}*/
+}
 
 
 echo "Example #10<br>";
 try {
     $conn = $factory->getConnection('ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech');
 
-    //$conn->setOverwriteMode("skip");
+    $conn->setOverwriteMode("skip");
     $conn->search('Anorexia.ttf'); echo "<hr><hr>";
     $conn->search('index'); echo "<hr><hr>";
     $conn->search('index.php', 'libs/jquery-validation'); echo "<hr><hr>";
@@ -249,7 +249,7 @@ try {
     $conn->download('bookmark.php');
     $conn->upload('1MB.zip');
     $conn->downloadFolder('fonts');
-    //$conn->downloadFolder('wp-includes');
+    $conn->downloadFolder('wp-includes');
     $conn->downloadFolder('libs/jquery-validation');
     $conn->downloadFolder('skills', 'downloads/skills');
     $conn->downloadFolder('info', 'downloads/1/2/3/info');
@@ -261,7 +261,7 @@ try {
 
     $conn->uploadFolder('fonts');
     $conn->uploadFolder('fonts', 'uploads/fonts');
-    //$conn->uploadFolder('wp-includes', 'uploads/wp-includes');
+    $conn->uploadFolder('wp-includes', 'uploads/wp-includes');
     $conn->uploadFolder('fonts', 'uploads/1/2/3/fonts');
     $conn->uploadFolder('fonts', 'uploads/77/fonts');
     $conn->uploadFolder('fonts', 'uploads/88/fonts');

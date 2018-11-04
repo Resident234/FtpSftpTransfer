@@ -191,7 +191,7 @@ abstract class Transfer
 
     ///////////////////////////////////////////////////////////////////
 
-    protected function setConnectionParameters($type, $user, $pass, $hostname)
+    public function setConnectionParameters($type, $user, $pass, $hostname)
     {
         if(!$type || !is_string($type)) {
             throw new \Exception(Helper::camelCaseToText(__FUNCTION__) . ' error: incorrect ' . Helper::camelCaseToText("connectionType"));
@@ -216,23 +216,23 @@ abstract class Transfer
         $this->connectionHostname = $hostname;
     }
 
-    protected function getConnectionType()
+    public function getConnectionType()
     {
         return $this->connectionType;
     }
 
-    protected function getConnectionUser()
+    public function getConnectionUser()
     {
         return $this->connectionUser;
     }
 
-    protected function getConnectionPass()
+    public function getConnectionPass()
     {
         if(is_array($this->connectionPass)) return implode("|", $this->connectionPass);
         return $this->connectionPass;
     }
 
-    protected function getConnectionHostname()
+    public function getConnectionHostname()
     {
         return $this->connectionHostname;
     }
@@ -253,7 +253,7 @@ abstract class Transfer
         return $this->isPassiveMode;
     }
 
-    protected function setDefaultConnectionMode()
+    public function setDefaultConnectionMode()
     {
         $this->pasv($this->enablePassiveConnectionMode());
     }
@@ -275,7 +275,7 @@ abstract class Transfer
         return $this->strTransferMode;
     }
 
-    protected function setDefaultTransferMode()
+    public function setDefaultTransferMode()
     {
         $this->setBinaryTransferMode();
     }
@@ -295,7 +295,7 @@ abstract class Transfer
         return $this->enumSwapMode;
     }
 
-    protected function setDefaultSwapMode()
+    public function setDefaultSwapMode()
     {
         if($this->arDefaultValues["Swap"]) {
             $this->setSwapMode($this->arDefaultValues["Swap"]);
@@ -319,7 +319,7 @@ abstract class Transfer
         return $this->isShowProgress;
     }
 
-    protected function setDefaultShowProgress()
+    public function setDefaultShowProgress()
     {
         if($this->arDefaultValues["ShowProgress"]) {
             $strShowProgress = $this->arDefaultValues["ShowProgress"];
@@ -703,7 +703,7 @@ abstract class Transfer
         $this->arCurrentPathOrigin = [];
     }
 
-    protected function getCurrentPathOrigin()
+    public function getCurrentPathOrigin()
     {
         return $this->arCurrentPathOrigin;
     }
@@ -731,7 +731,7 @@ abstract class Transfer
         $this->arCurrentPathReceiver = [];
     }
 
-    protected function getCurrentPathReceiver()
+    public function getCurrentPathReceiver()
     {
         return $this->arCurrentPathReceiver;
     }
@@ -1112,7 +1112,7 @@ abstract class Transfer
         return humanFilesize($this->getRemoteFileSize($remoteFile)) . " / " . humanFilesize($this->getLocalFileSize($localFile));
     }
 
-    protected function getRemoteFileSize($remoteFile)
+    public function getRemoteFileSize($remoteFile)
     {
         if(!$remoteFile) return;
         if(!is_string($remoteFile)) return;
@@ -1120,7 +1120,7 @@ abstract class Transfer
         return $this->size($remoteFile);
     }
 
-    protected function getLocalFileSize($localFile)
+    public function getLocalFileSize($localFile)
     {
         if(!$localFile) return;
         if(!is_string($localFile)) return;
@@ -1314,7 +1314,7 @@ abstract class Transfer
         }
     }
 
-    public function isTriggeringSearchingFilesFilter($file)
+    protected function isTriggeringSearchingFilesFilter($file)
     {
         if(!$file) return false;
         if(!is_string($file)) return false;

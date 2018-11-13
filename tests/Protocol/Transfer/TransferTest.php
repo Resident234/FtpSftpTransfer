@@ -7,14 +7,36 @@ use FileTransfer as FT;
 
 class TransferTest extends TestCase
 {
+    private $arFTPConnectionSettings = ['ftp', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech', 21];
+    private $arSSHConnectionSettings = ['ssh', 'gsu123ln_personal', 'w4z&0GH0', 'gsu123ln.beget.tech', 22];
+
     public function testConstruct()
     {
         $factory = new FT\Factory();
         $this->assertInstanceOf(FT\Factory::class, $factory);
+
+        $connFTP = $factory->getConnection(
+            $this->arFTPConnectionSettings[0],
+            $this->arFTPConnectionSettings[1],
+            $this->arFTPConnectionSettings[2],
+            $this->arFTPConnectionSettings[3],
+            $this->arFTPConnectionSettings[4]
+        );
+        $this->assertInstanceOf(FileTransfer\Protocol\Transfer\FTP::class, $connFTP);
+
+        $connSSH = $factory->getConnection(
+            $this->arSSHConnectionSettings[0],
+            $this->arSSHConnectionSettings[1],
+            $this->arSSHConnectionSettings[2],
+            $this->arSSHConnectionSettings[3],
+            $this->arSSHConnectionSettings[4]
+        );
+        $this->assertInstanceOf(FileTransfer\Protocol\Transfer\SSH2Transfer\SSH2SFTP::class, $connSSH);
     }
 
     public function testSetFolderCurrentSize()
     {
+        $factory = new FT\Factory();
 
     }
 
@@ -24,199 +46,199 @@ class TransferTest extends TestCase
     }
 
 
-    public function SetFolderDefaultCurrentSize()
+    public function testSetFolderDefaultCurrentSize()
     {
 
     }
 
-    public function SetFolderDefaultCurrentCountFiles()
-    {
-    }
-
-    ///////////////////////////////////////////////////////////////////
-    public function AddToCache($data, $arTags)
-    {
-
-    }
-
-    public function CheckCache($arTags)
-    {
-
-    }
-
-    public function ClearAllCache()
-    {
-    }
-
-    public function ClearCacheByTag($arTags)
-    {
-
-    }
-
-    public function GetCacheTags($arAdditionalsTags)
-    {
-
-    }
-
-
-    ///////////////////////////////////////////////////////////////////
-    public function PrepareArguments()
-    {
-
-    }
-
-    public function CheckIsTransferFunction()
-    {
-    }
-
-
-    public function CheckIsHightLevelFunction()
+    public function testSetFolderDefaultCurrentCountFiles()
     {
     }
 
     ///////////////////////////////////////////////////////////////////
-
-    public function SetDefaultParameters()
+    public function testAddToCache($data, $arTags)
     {
 
     }
 
-    ///////////////////////////////////////////////////////////////////
-
-    public function SetConnectionParameters()
+    public function testCheckCache($arTags)
     {
 
     }
 
-    public function GetConnectionType()
+    public function testClearAllCache()
     {
     }
 
-    public function GetConnectionUser()
-    {
-    }
-
-    public function GetConnectionPass()
+    public function testClearCacheByTag($arTags)
     {
 
     }
 
-    public function GetConnectionHostname()
-    {
-    }
-    ///////////////////////////////////////////////////////////////////
-
-    public function EnablePassiveConnectionMode()
-    {
-    }
-
-    public function DisablePassiveConnectionMode()
-    {
-    }
-
-    public function IsPassiveMode()
-    {
-    }
-
-    public function SetDefaultConnectionMode()
-    {
-    }
-
-    ///////////////////////////////////////////////////////////////////
-
-    public function SetBinaryTransferMode()
-    {
-    }
-
-    public function SetTextualTransferMode()
-    {
-    }
-
-    public function GetTransferMode()
-    {
-    }
-
-    public function SetDefaultTransferMode()
-    {
-    }
-
-    ///////////////////////////////////////////////////////////////////
-
-    public function SetSwapMode($strSwapMode)
-    {
-
-
-    }
-
-    public function GetSwapMode()
-    {
-    }
-
-    public function SetDefaultSwapMode()
-    {
-
-    }
-
-    ///////////////////////////////////////////////////////////////////
-
-    public function EnableShowProgress()
-    {
-    }
-
-    public function DisableShowProgress()
-    {
-    }
-
-    public function GetShowProgress()
-    {
-    }
-
-    public function SetDefaultShowProgress()
-    {
-
-    }
-
-    public function GetCurrentShowProgressPrefix()
+    public function testGetCacheTags($arAdditionalsTags)
     {
 
     }
 
 
     ///////////////////////////////////////////////////////////////////
+    public function testPrepareArguments()
+    {
 
-    public function Search(
+    }
+
+    public function testCheckIsTransferFunction()
+    {
+    }
+
+
+    public function testCheckIsHightLevelFunction()
+    {
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testSetDefaultParameters()
+    {
+
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testSetConnectionParameters()
+    {
+
+    }
+
+    public function testGetConnectionType()
+    {
+    }
+
+    public function testGetConnectionUser()
+    {
+    }
+
+    public function testGetConnectionPass()
+    {
+
+    }
+
+    public function testGetConnectionHostname()
+    {
+    }
+    ///////////////////////////////////////////////////////////////////
+
+    public function testEnablePassiveConnectionMode()
+    {
+    }
+
+    public function testDisablePassiveConnectionMode()
+    {
+    }
+
+    public function testIsPassiveMode()
+    {
+    }
+
+    public function testSetDefaultConnectionMode()
+    {
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testSetBinaryTransferMode()
+    {
+    }
+
+    public function testSetTextualTransferMode()
+    {
+    }
+
+    public function testGetTransferMode()
+    {
+    }
+
+    public function testSetDefaultTransferMode()
+    {
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testSetSwapMode($strSwapMode)
+    {
+
+
+    }
+
+    public function testGetSwapMode()
+    {
+    }
+
+    public function testSetDefaultSwapMode()
+    {
+
+    }
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testEnableShowProgress()
+    {
+    }
+
+    public function testDisableShowProgress()
+    {
+    }
+
+    public function testGetShowProgress()
+    {
+    }
+
+    public function testSetDefaultShowProgress()
+    {
+
+    }
+
+    public function testGetCurrentShowProgressPrefix()
+    {
+
+    }
+
+
+    ///////////////////////////////////////////////////////////////////
+
+    public function testSearch(
     ) {
 
 
     }
 
     ///////////////////////////////////
-    private function ActionListPreparingBeforeSync()
+    private function testActionListPreparingBeforeSync()
     {
 
     }
 
-    private function ActionListPreparingAfterSync()
+    private function testActionListPreparingAfterSync()
     {
 
     }
 
-    private function ActionListSync($strFolder)
+    private function testActionListSync($strFolder)
     {
 
     }
 
-    private function ActionTransferPreparingBeforeSync()
+    private function testActionTransferPreparingBeforeSync()
     {
 
     }
 
-    private function ActionTransferPreparingAfterSync()
+    private function testActionTransferPreparingAfterSync()
     {
 
     }
 
-    private function ActionTransferSync()
+    private function testActionTransferSync()
     {
 
     }
@@ -224,470 +246,470 @@ class TransferTest extends TestCase
 
     ///////////////////////////////////
 
-    private function SearchingPreparingBefore()
+    private function testSearchingPreparingBefore()
     {
 
     }
 
-    private function SearchingPreparingAfter()
-    {
-
-    }
-
-    ///////////////////////////////////
-    public function DownloadFolder($strRemoteFolder, $strLocalFolder = "")
-    {
-
-    }
-
-    public function UploadFolder($strLocalFolder, $strRemoteFolder = "")
+    private function testSearchingPreparingAfter()
     {
 
     }
 
     ///////////////////////////////////
-    public function PreparingTransferFolder($strFolder)
+    public function testDownloadFolder($strRemoteFolder, $strLocalFolder = "")
     {
 
     }
 
-    public function PreparingTransferFolderNB($strFolder)
+    public function testUploadFolder($strLocalFolder, $strRemoteFolder = "")
     {
 
     }
 
     ///////////////////////////////////
-    public function SetLocalFolderSize($strLocalFolder)
+    public function testPreparingTransferFolder($strFolder)
+    {
+
+    }
+
+    public function testPreparingTransferFolderNB($strFolder)
+    {
+
+    }
+
+    ///////////////////////////////////
+    public function testSetLocalFolderSize($strLocalFolder)
     {
 
 
     }
 
-    public function SetRemoteFolderSize($strRemoteFolder)
+    public function testSetRemoteFolderSize($strRemoteFolder)
     {
 
     }
 
-    public function GetFolderSize()
+    public function testGetFolderSize()
     {
     }
 
     ///////////////////////////////////
-    public function SetLocalFolderCountFiles($strLocalFolder)
+    public function testSetLocalFolderCountFiles($strLocalFolder)
     {
 
 
     }
 
-    public function SetRemoteFolderCountFiles($strRemoteFolder)
+    public function testSetRemoteFolderCountFiles($strRemoteFolder)
     {
 
 
     }
 
-    public function GetFolderCountFiles()
+    public function testGetFolderCountFiles()
     {
     }
 
     ///////////////////////////////////
-    public function Sync($strOriginFolder, $strReceiverFolder = "")
+    public function testSync($strOriginFolder, $strReceiverFolder = "")
     {
 
     }
 
     /////////////////////////////////////////////
-    public function ClearFullNamesFilesList()
+    public function testClearFullNamesFilesList()
     {
     }
 
-    public function GetFullNamesFilesList()
+    public function testGetFullNamesFilesList()
     {
     }
 
-    public function PrintFullNamesFilesList()
+    public function testPrintFullNamesFilesList()
     {
     }
 
-    public function PutToFullNamesFilesList($strFileFullName)
+    public function testPutToFullNamesFilesList($strFileFullName)
     {
     }
 
-    public function ClearCurrentPathOrigin()
+    public function testClearCurrentPathOrigin()
     {
     }
 
-    public function GetCurrentPathOrigin()
+    public function testGetCurrentPathOrigin()
     {
     }
 
-    public function AddToCurrentPathOrigin($strFolderOrFile)
+    public function testAddToCurrentPathOrigin($strFolderOrFile)
     {
     }
 
-    public function RemoveLastElementFormCurrentPathOrigin()
+    public function testRemoveLastElementFormCurrentPathOrigin()
     {
     }
 
 
 
-    public function ClearCurrentPathReceiver()
+    public function testClearCurrentPathReceiver()
     {
     }
 
-    public function GetCurrentPathReceiver()
+    public function testGetCurrentPathReceiver()
     {
     }
 
-    public function AddToCurrentPathReceiver($strFolderOrFile)
-    {
-
-    }
-
-    public function RemoveLastElementFormCurrentPathReceiver()
+    public function testAddToCurrentPathReceiver($strFolderOrFile)
     {
 
     }
 
+    public function testRemoveLastElementFormCurrentPathReceiver()
+    {
 
-    public function DisableMkDirLogMode()
+    }
+
+
+    public function testDisableMkDirLogMode()
     {
     }
 
-    public function EnableMkDirLogMode()
+    public function testEnableMkDirLogMode()
     {
     }
 
-    public function IsMkDirLogMode()
+    public function testIsMkDirLogMode()
     {
     }
 
 
     ///////////////////////////////////
-    public function SyncChdirOrigin($strFolder)
+    public function testSyncChdirOrigin($strFolder)
     {
 
     }
 
-    public function SyncChdirReceiver($strFolder)
+    public function testSyncChdirReceiver($strFolder)
     {
 
     }
 
-    public function SyncIsDirReceiver($strFolder)
+    public function testSyncIsDirReceiver($strFolder)
     {
 
     }
 
-    public function SyncIsDirOrigin($strFolder)
+    public function testSyncIsDirOrigin($strFolder)
     {
 
     }
 
-    public function SyncMkDir($strFolder)
+    public function testSyncMkDir($strFolder)
     {
 
     }
 
-    public function SyncNlist($strFolder)
+    public function testSyncNlist($strFolder)
     {
 
     }
 
-    public function SyncAction($file, $strActionMethodName)
+    public function testSyncAction($file, $strActionMethodName)
     {
 
     }
 
-    public function SyncTransfer($file)
+    public function testSyncTransfer($file)
     {
 
     }
 
-    public function SyncFolderTransferNB($file)
+    public function testSyncFolderTransferNB($file)
     {
 
     }
 
-    public function SyncFolderTransfer()
+    public function testSyncFolderTransfer()
     {
 
     }
 
-    public function SyncList($file)
-    {
-
-    }
-
-    ///////////////////////////////////
-    public function SyncSwapFileCopy($file)
-    {
-    }
-
-    public function SyncSwapFileMove($file)
-    {
-
-    }
-
-    public function SyncSwapFolderCopy($folder)
-    {
-
-    }
-
-    public function SyncSwapFolderMove($folder)
-    {
-
-    }
-    ///////////////////////////////////
-    public function SyncChdirOriginDownload($strFolder)
-    {
-
-    }
-
-    public function SyncChdirOriginUpload($strFolder)
-    {
-
-    }
-
-    public function SyncChdirReceiverDownload($strFolder)
-    {
-
-    }
-
-    public function SyncChdirReceiverUpload($strFolder)
-    {
-
-    }
-
-    public function SyncIsDirReceiverDownload($strFolder)
-    {
-
-    }
-
-    public function SyncIsDirReceiverUpload($strFolder)
-    {
-
-    }
-
-    public function SyncIsDirOriginDownload($strFolder)
-    {
-
-    }
-
-    public function SyncIsDirOriginUpload($strFolder)
-    {
-
-    }
-
-    public function SyncMkDirDownload($strFolder)
-    {
-
-    }
-
-    public function SyncMkDirUpload($strFolder)
-    {
-
-    }
-
-    public function SyncNlistDownload($strFolder)
-    {
-
-    }
-
-    public function SyncNlistUpload($strFolder)
-    {
-
-    }
-
-    public function SyncTransferDownload($file)
-    {
-    }
-
-    public function SyncTransferUpload($file)
-    {
-    }
-
-    public function SyncFileTransferNB($file, $strDirection)
-    {
-    }
-
-    public function SyncFileTransfer($file, $strDirection)
-    {
-    }
-
-    public function GetSyncFileTransferDirectionGetPercentProgress($localFile, $remoteFile)
-    {
-
-    }
-
-    public function GetSyncFileTransferDirectionPutPercentProgress($remoteFile, $localFile)
-    {
-
-    }
-
-    public function GetSyncFileTransferDirectionGetSizeProgress($localFile, $remoteFile)
-    {
-
-    }
-
-    public function GetSyncFileTransferDirectionPutSizeProgress($remoteFile, $localFile)
-    {
-
-    }
-
-    public function GetRemoteFileSize($remoteFile)
-    {
-
-    }
-
-    public function GetLocalFileSize($localFile)
-    {
-
-    }
-
-    public function HumanFilesize($bytes, $decimals = 2) {
-
-    }
-
-    ///////////////////////////////////
-
-    private function IsDir($dir)
-    {
-
-    }
-
-    public function FileExistGet($strFileName)
-    {
-
-    }
-
-    public function FileExistPut($strFileName)
+    public function testSyncList($file)
     {
 
     }
 
     ///////////////////////////////////
-    public function Cd($strDirectory)
+    public function testSyncSwapFileCopy($file)
+    {
+    }
+
+    public function testSyncSwapFileMove($file)
     {
 
     }
 
-    public function Download($strRemoteFile)
+    public function testSyncSwapFolderCopy($folder)
     {
 
     }
 
-    public function Upload($strLocalFile)
+    public function testSyncSwapFolderMove($folder)
+    {
+
+    }
+    ///////////////////////////////////
+    public function testSyncChdirOriginDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncChdirOriginUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncChdirReceiverDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncChdirReceiverUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncIsDirReceiverDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncIsDirReceiverUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncIsDirOriginDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncIsDirOriginUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncMkDirDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncMkDirUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncNlistDownload($strFolder)
+    {
+
+    }
+
+    public function testSyncNlistUpload($strFolder)
+    {
+
+    }
+
+    public function testSyncTransferDownload($file)
+    {
+    }
+
+    public function testSyncTransferUpload($file)
+    {
+    }
+
+    public function testSyncFileTransferNB($file, $strDirection)
+    {
+    }
+
+    public function testSyncFileTransfer($file, $strDirection)
+    {
+    }
+
+    public function testGetSyncFileTransferDirectionGetPercentProgress($localFile, $remoteFile)
+    {
+
+    }
+
+    public function testGetSyncFileTransferDirectionPutPercentProgress($remoteFile, $localFile)
+    {
+
+    }
+
+    public function testGetSyncFileTransferDirectionGetSizeProgress($localFile, $remoteFile)
+    {
+
+    }
+
+    public function testGetSyncFileTransferDirectionPutSizeProgress($remoteFile, $localFile)
+    {
+
+    }
+
+    public function testGetRemoteFileSize($remoteFile)
+    {
+
+    }
+
+    public function testGetLocalFileSize($localFile)
+    {
+
+    }
+
+    public function testHumanFilesize($bytes, $decimals = 2) {
+
+    }
+
+    ///////////////////////////////////
+
+    private function testIsDir($dir)
+    {
+
+    }
+
+    public function testFileExistGet($strFileName)
+    {
+
+    }
+
+    public function testFileExistPut($strFileName)
+    {
+
+    }
+
+    ///////////////////////////////////
+    public function testCd($strDirectory)
+    {
+
+    }
+
+    public function testDownload($strRemoteFile)
+    {
+
+    }
+
+    public function testUpload($strLocalFile)
     {
 
     }
 
     /////////////////////////////////////////////
-    public function SetOverwriteMode($strOverwriteMode)
+    public function testSetOverwriteMode($strOverwriteMode)
     {
 
     }
 
-    public function GetOverwriteMode()
+    public function testGetOverwriteMode()
     {
     }
 
-    public function SetDefaultOverwriteMode()
+    public function testSetDefaultOverwriteMode()
     {
     }
 
     ///////////////////////////////////////////////////////////////////
-    public function SetAction($strAction)
+    public function testSetAction($strAction)
     {
 
     }
 
-    public function GetAction()
+    public function testGetAction()
     {
     }
 
-    public function SetDefaultAction()
+    public function testSetDefaultAction()
     {
     }
 
     ///////////////////////////////////////////////////////////////////
-    public function SetDirection($strDirection)
+    public function testSetDirection($strDirection)
     {
 
     }
 
-    public function GetDirection()
+    public function testGetDirection()
     {
     }
 
-    public function SetDefaultDirection()
+    public function testSetDefaultDirection()
     {
     }
 
 
     /////////////////////////////////////////////
-    public function SetSearchingFilesFilter($strRegex)
+    public function testSetSearchingFilesFilter($strRegex)
     {
 
     }
 
-    public function GetSearchingFilesFilter()
+    public function testGetSearchingFilesFilter()
     {
     }
 
-    public function UnsetSearchingFilesFilter()
+    public function testUnsetSearchingFilesFilter()
     {
     }
 
-    public function IsSearchingFilesFilter()
+    public function testIsSearchingFilesFilter()
     {
 
     }
 
-    public function IsTriggeringSearchingFilesFilter($file)
+    public function testIsTriggeringSearchingFilesFilter($file)
     {
 
     }
 
 
     /////////////////////////////////////////////
-    public function SetRecursively($isRecursively)
+    public function testSetRecursively($isRecursively)
     {
 
     }
 
-    public function IsRecursively()
+    public function testIsRecursively()
     {
 
     }
 
-    public function SetDefaultRecursively()
+    public function testSetDefaultRecursively()
     {
 
     }
 
     //////////////////////////////////////////////
-    public function TransferSkip()
+    public function testTransferSkip()
     {
 
     }
 
-    public function TransferRename()
+    public function testTransferRename()
     {
 
     }
 
-    public function TransferOverwrite()
+    public function testTransferOverwrite()
     {
 
     }
 
     //////////////////////////////////////////////
-    public function CallArgumentsStashing()
+    public function testCallArgumentsStashing()
     {
 
     }
 
-    public function CallArgumentsUnstashing()
+    public function testCallArgumentsUnstashing()
     {
 
     }
